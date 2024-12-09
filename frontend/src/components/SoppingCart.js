@@ -20,7 +20,7 @@ const ShoppingCart = ({ cartItems, updateCartItem, removeFromCart }) => {
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Кошик</Modal.Title>
+                    <Modal.Title>Cart</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {cartItems.length === 0 ? (

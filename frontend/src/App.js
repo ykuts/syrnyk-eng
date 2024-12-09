@@ -52,34 +52,34 @@ function App() {
                 } 
               /> */}
 
-              <Route 
-                path="/client" 
+              <Route
+                path="/client"
                 element={
                   <PrivateRoute>
                     <UserProfile />
                   </PrivateRoute>
-                } 
+                }
               />
 
-<Route
-  path="/orders"
-  element={
-    <PrivateRoute>
-      <OrderHistory />
-    </PrivateRoute>
-  }
-/>
-              
+              <Route
+                path="/orders"
+                element={
+                  <PrivateRoute>
+                    <OrderHistory />
+                  </PrivateRoute>
+                }
+              />
+
               {/* Admin Routes */}
-              <Route 
-                path="/admin" 
+              <Route
+                path="/admin"
                 element={
                   <PrivateRoute adminOnly>
                     <AdminDashboard />
                   </PrivateRoute>
                 }
               >
-              
+
                 <Route index element={<Navigate to="/admin/orders" replace />} />
                 <Route path="orders" element={<OrdersPanel />} />
                 <Route path="customers" element={<CustomersPanel />} />

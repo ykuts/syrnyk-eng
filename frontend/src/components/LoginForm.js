@@ -23,7 +23,7 @@ function LoginForm({ closeModal }) {
       const result = await login(email, password);
       
       if (result.success) {
-        // После успешного входа, redirect в зависимости от роли
+        // After successful login, redirect based on role
         const role = result.user.role;
         if (role === 'CLIENT') {
           navigate('/client');
@@ -49,7 +49,7 @@ function LoginForm({ closeModal }) {
 
   const handleForgotPassword = (e) => {
     e.preventDefault();
-    // Добавьте здесь логику для восстановления пароля
+    // Add password recovery logic here
     console.log('Forgot password clicked');
   };
 
@@ -64,7 +64,7 @@ function LoginForm({ closeModal }) {
           name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Введіть email"
+          placeholder="Enter email"
           required
           className="form-control-lg"
           disabled={loading}
@@ -72,14 +72,14 @@ function LoginForm({ closeModal }) {
       </Form.Group>
 
       <Form.Group className="mb-4">
-        <Form.Label>Пароль</Form.Label>
+        <Form.Label>Password</Form.Label>
         <InputGroup>
           <Form.Control
             type={showPassword ? "text" : "password"}
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Введіть пароль"
+            placeholder="Enter password"
             required
             className="form-control-lg"
             disabled={loading}
@@ -97,7 +97,7 @@ function LoginForm({ closeModal }) {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <Form.Check
           type="checkbox"
-          label="Запам'ятати мене"
+          label="Remember me"
           className="custom-checkbox"
           disabled={loading}
         />
@@ -106,7 +106,7 @@ function LoginForm({ closeModal }) {
           className="text-decoration-none"
           onClick={handleForgotPassword}
         >
-          Забули пароль?
+          Forgot password?
         </a>
       </div>
 
@@ -116,17 +116,17 @@ function LoginForm({ closeModal }) {
         className="w-100 py-2 mb-3 btn-lg"
         disabled={loading}
       >
-        {loading ? 'Вхід...' : 'Увійти'}
+        {loading ? 'Signing in...' : 'Sign In'}
       </Button>
       
       <div className="text-center">
-        <span className="text-muted">Немає акаунту? </span>
+        <span className="text-muted">Don't have an account? </span>
         <a 
           href="/" 
           className="text-decoration-none"
           onClick={handleRegisterClick}
         >
-          Зареєструватися
+          Register
         </a>
       </div>
     </Form>

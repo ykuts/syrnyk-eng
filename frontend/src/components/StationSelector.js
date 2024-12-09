@@ -39,7 +39,7 @@ const StationSelector = ({ stations, selectedStation, onChange }) => {
                 <Col md={4}>
                   <img
                     src={`${process.env.REACT_APP_API_URL}${selectedStationData.photo}`}
-                    alt="Місце зустрічі"
+                    alt="Meeting Point"
                     className="img-fluid rounded w-100 mb-3 mb-md-0"
                   />
                 </Col>
@@ -47,12 +47,12 @@ const StationSelector = ({ stations, selectedStation, onChange }) => {
               <Col md={selectedStationData?.photo ? 8 : 12}>
                 <h5 className="mb-2">{selectedStationData.city} - {selectedStationData.name}</h5>
                 <div className="mb-3">
-                  <h6 className="mb-2">Місце зустрічі:</h6>
+                  <h6 className="mb-2">Meeting Point:</h6>
                   <p className="mb-3">{selectedStationData?.meetingPoint}</p>
                 </div>
 
                 <div>
-                  <label className="form-label fw-medium">Оберіть час зустрічі</label>
+                  <label className="form-label fw-medium">Select Meeting Time</label>
                   <input
                     type="datetime-local"
                     name="meetingTime"

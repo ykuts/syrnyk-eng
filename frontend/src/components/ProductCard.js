@@ -72,7 +72,7 @@ const ProductCard = ({ product }) => {
                                     roundedCircle 
                                     style={{ width: '25px', height: '25px', marginRight: '3px' }} 
                                 />
-                                <span>До кошика</span>
+                                <span>Add to cart</span>
                             </Button>
                         ) : (
                             <div className="quantity-controls">

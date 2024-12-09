@@ -8,10 +8,10 @@ import CheckoutForm from './CheckoutForm';
 
 const STORE_ADDRESS = {
   id: 1,
-  name: "Магазин у Nyon",
+  name: "Store in Nyon",
   address: "Chemin de Pre-Fleuri, 5",
   city: "Nyon",
-  workingHours: "щодня 9.00-20.00"
+  workingHours: "daily 9:00-20:00"
 };
 
 const CheckoutPage = () => {
@@ -51,7 +51,6 @@ const CheckoutPage = () => {
   const [submitError, setSubmitError] = useState(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  // Autofill user data when component mounts or user changes
   useEffect(() => {
     if (user) {
       setFormData(prevState => ({
@@ -60,11 +59,8 @@ const CheckoutPage = () => {
         lastName: user.lastName || prevState.lastName,
         email: user.email || prevState.email,
         phone: user.phone || prevState.phone,
-        // If user has a preferred delivery location, we can set it here
         ...(user.preferredDeliveryLocation && {
           deliveryType: 'ADDRESS',
-          // Assuming preferredDeliveryLocation is stored in a structured format
-          // You might need to parse it if it's stored as a string
         })
       }));
     }
@@ -89,16 +85,16 @@ const CheckoutPage = () => {
 
   const CartTable = () => (
     <div className="mb-5">
-      <h2 className="h4 mb-4">Ваші товари</h2>
+      <h2 className="h4 mb-4">Your Items</h2>
       <div className="table-responsive">
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th>Назва товару</th>
-              <th className="text-center">Кількість</th>
-              <th className="text-end">Ціна</th>
-              <th className="text-end">Сума</th>
-              <th className="text-center">Дії</th>
+              <th>Product Name</th>
+              <th className="text-center">Quantity</th>
+              <th className="text-end">Price</th>
+              <th className="text-end">Total</th>
+              <th className="text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -132,7 +128,7 @@ const CheckoutPage = () => {
                     variant="outline-danger" 
                     size="sm"
                     onClick={() => removeAllFromCart(item.id)}
-                    title="Видалити товар"
+                    title="Remove item"
                   >
                     <Trash size={16} />
                   </Button>
@@ -140,7 +136,7 @@ const CheckoutPage = () => {
               </tr>
             ))}
             <tr className="table-active">
-              <td colSpan="3" className="text-end fw-bold">Усього:</td>
+              <td colSpan="3" className="text-end fw-bold">Total:</td>
               <td className="text-end fw-bold fs-5">{totalPrice.toFixed(2)} CHF</td>
               <td></td>
             </tr>
@@ -153,14 +149,14 @@ const CheckoutPage = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     
-    // Специальная обработка для полей с датой
+    // Special handling for date fields
     if (name === 'meetingTime' || name === 'pickupTime') {
-      // Проверяем, что значение не пустое
+      // Check if the value is not empty
       if (value) {
         const selectedDate = new Date(value);
-        const minDate = new Date(Date.now() + 24 * 60 * 60 * 1000); // минимум следующий день
+        const minDate = new Date(Date.now() + 24 * 60 * 60 * 1000); // minimum next day
         
-        // Если выбранная дата раньше минимальной, устанавливаем минимальную
+        // If selected date is earlier than minimum, set to minimum
         if (selectedDate < minDate) {
           setFormData(prevState => ({
             ...prevState,
@@ -207,7 +203,7 @@ const CheckoutPage = () => {
         };
       }
   
-      // В зависимости от типа доставки добавляем соответствующие данные
+      // Add corresponding data depending on delivery type
       if (formData.deliveryType === 'ADDRESS') {
         orderData.addressDelivery = {
           street: formData.street,
@@ -223,7 +219,7 @@ const CheckoutPage = () => {
         };
       } else if (formData.deliveryType === 'PICKUP') {
         orderData.pickupDelivery = {
-          storeId: 1, // Используем существующий ID магазина из базы данных
+          storeId: 1, // Using existing store ID from database
           pickupTime: new Date(formData.pickupTime).toISOString()
         };
       }
@@ -251,7 +247,7 @@ const CheckoutPage = () => {
       clearCart();
       
     } catch (error) {
-      setSubmitError(`Помилка при оформленні замовлення: ${error.message}`);
+      setSubmitError(`Error placing order: ${error.message}`);
       console.error('Order submission error:', error);
     } finally {
       setIsSubmitting(false);
@@ -286,7 +282,7 @@ const CheckoutPage = () => {
   if (loading) {
     return (
       <Container className="py-5 text-center">
-        <p>Завантаження...</p>
+        <p>Loading...</p>
       </Container>
     );
   }
@@ -294,13 +290,13 @@ const CheckoutPage = () => {
   if (cartItems.length === 0 && !submitSuccess) {
     return (
       <Container className="py-5 text-center">
-        <h2>Ваш кошик порожній</h2>
+        <h2>Your cart is empty</h2>
         <Button 
           variant="primary" 
           className="mt-3"
           onClick={() => navigate('/')}
         >
-          Повернутися до покупок
+          Return to Shopping
         </Button>
       </Container>
     );
@@ -309,14 +305,14 @@ const CheckoutPage = () => {
   if (submitSuccess) {
     return (
       <Container className="py-5 text-center">
-        <h2 className="text-success mb-4">Замовлення успішно оформлено!</h2>
-        <p>Дякуємо за Ваше замовлення. Ми зв'яжемося з Вами найближчим часом.</p>
+        <h2 className="text-success mb-4">Order successfully placed!</h2>
+        <p>Thank you for your order. We will contact you shortly.</p>
         <Button 
           variant="primary" 
           className="mt-3"
           onClick={() => navigate('/')}
         >
-          Повернутися до покупок
+          Return to Shopping
         </Button>
       </Container>
     );
@@ -324,7 +320,7 @@ const CheckoutPage = () => {
 
   return (
     <Container className="py-5">
-      <h1 className="text-center mb-5">Оформлення замовлення</h1>
+      <h1 className="text-center mb-5">Checkout</h1>
       
       <Form onSubmit={handleSubmit}>
         <div className="max-w-3xl mx-auto">
@@ -352,7 +348,7 @@ const CheckoutPage = () => {
               variant="primary"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Оформлення...' : 'Оформити замовлення'}
+              {isSubmitting ? 'Processing...' : 'Place Order'}
             </Button>
           </div>
         </div>

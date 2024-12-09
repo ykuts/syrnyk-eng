@@ -7,20 +7,20 @@ const DeliveryMethodSelector = ({ selectedMethod, onChange }) => {
     {
       id: 'PICKUP',
       icon: <Package size={24} />,
-      title: 'Самовивіз',
-      description: 'З нашого магазину у Nyon'
+      title: 'Pickup',
+      description: 'From our store in Nyon'
     },
     {
       id: 'ADDRESS',
       icon: <Truck size={24} />,
-      title: 'Адресна доставка',
-      description: 'Доставимо за вашою адресою'
+      title: 'Home Delivery',
+      description: 'We will deliver to your address'
     },
     {
       id: 'RAILWAY_STATION',
       icon: <Train size={24} />,
-      title: 'Доставка до ЖД станції',
-      description: 'Зустрінемо вас на станції'
+      title: 'Railway Station Delivery',
+      description: 'We will meet you at the station'
     }
   ];
 

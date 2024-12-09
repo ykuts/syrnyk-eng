@@ -8,19 +8,19 @@ const PaymentMethodSelector = ({ selectedMethod, onChange }) => {
       id: 'TWINT',
       icon: <Wallet size={24} />,
       title: 'TWINT',
-      description: 'Швидка оплата через додаток'
+      description: 'Quick payment via app'
     },
     {
       id: 'CARD',
       icon: <CreditCard size={24} />,
-      title: 'Карта',
-      description: 'Дебетова або кредитна карта'
+      title: 'Card',
+      description: 'Debit or credit card'
     },
     {
       id: 'CASH',
       icon: <Banknote size={24} />,
-      title: 'Готівка',
-      description: 'Оплата при отриманні'
+      title: 'Cash',
+      description: 'Payment upon delivery'
     }
   ];
 

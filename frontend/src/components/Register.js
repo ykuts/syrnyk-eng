@@ -52,13 +52,13 @@ const Register = () => {
   return (
     <Container className="py-5">
       <div className="mx-auto" style={{ maxWidth: '500px' }}>
-        <h2 className="text-center mb-4">Реєстрація</h2>
+        <h2 className="text-center mb-4">Registration</h2>
         
         {error && <Alert variant="danger">{error}</Alert>}
         
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
-            <Form.Label>Ім'я</Form.Label>
+            <Form.Label>First name</Form.Label>
             <Form.Control
               type="text"
               name="firstName"
@@ -69,7 +69,7 @@ const Register = () => {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Прізвище</Form.Label>
+            <Form.Label>Last name</Form.Label>
             <Form.Control
               type="text"
               name="lastName"
@@ -91,7 +91,7 @@ const Register = () => {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Телефон</Form.Label>
+            <Form.Label>Phone number</Form.Label>
             <Form.Control
               type="tel"
               name="phone"
@@ -101,7 +101,7 @@ const Register = () => {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Пароль</Form.Label>
+            <Form.Label>Password</Form.Label>
             <Form.Control
               type="password"
               name="password"
@@ -112,7 +112,7 @@ const Register = () => {
           </Form.Group>
 
           <Form.Group className="mb-4">
-            <Form.Label>Підтвердження пароля</Form.Label>
+            <Form.Label>Confirm the password</Form.Label>
             <Form.Control
               type="password"
               name="confirmPassword"
@@ -128,7 +128,7 @@ const Register = () => {
             className="w-100"
             disabled={loading}
           >
-            {loading ? 'Реєстрація...' : 'Зареєструватися'}
+            {loading ? 'Registering...' : 'Register'}
           </Button>
         </Form>
       </div>

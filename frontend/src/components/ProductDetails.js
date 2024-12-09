@@ -32,7 +32,7 @@ const ProductDetails = () => {
             try {
                 const data = await apiClient.get(`/api/products/${id}`);
                 if (!data) {
-                    throw new Error('Продукт не знайдено');
+                    throw new Error('Product not found');
                 }
                 setProduct(data);
                 setError(null);
@@ -71,12 +71,12 @@ const ProductDetails = () => {
             <Container>
                 <div className="text-center my-5">
                     <Alert variant="danger">
-                        {error || 'Продукт не знайдено'}
+                        {error || 'Product not found'}
                         <br />
-                        <small>Повернення на головну сторінку...</small>
+                        <small>Returning to homepage...</small>
                     </Alert>
                     <Link to="/" className="btn btn-primary mt-3">
-                        На головну
+                        Home page
                     </Link>
                 </div>
             </Container>
@@ -106,7 +106,7 @@ const ProductDetails = () => {
         <div>
             <Container className="my-4">
                 <div className='mb-3' style={{ textAlign: 'start' }}>
-                    <Link to="/" className="custom-link">На головну</Link> &gt; {product.name}
+                    <Link to="/" className="custom-link">Home page</Link> &gt; {product.name}
                 </div>
                 <Row>
                     <Col md={8}>
@@ -163,7 +163,7 @@ const ProductDetails = () => {
                                             roundedCircle 
                                             style={{ width: '25px', height: '25px', marginRight: '3px' }} 
                                         />
-                                        <span>До кошика</span>
+                                        <span>Add to cart</span>
                                     </Button>
                                 ) : (
                                     <div className="quantity-controls-det">
@@ -191,12 +191,12 @@ const ProductDetails = () => {
 
                         <Card className="mb-4" style={{ backgroundColor: '#94c4d8', textAlign: 'start', borderRadius: '15px' }}>
                             <Card.Body>
-                                <Card.Title>Склад</Card.Title>
+                                <Card.Title>Ingridients</Card.Title>
                                 <Card.Text>
                                     <p>{product.descriptionFull}</p>
                                     {product.assortment && product.assortment.length > 0 && (
                                         <div>
-                                            <h5>Асортимент</h5>
+                                            <h5>Assortment</h5>
                                             <ul>
                                                 {product.assortment.map((item, index) => (
                                                     <li key={index}>{item}</li>
@@ -204,7 +204,7 @@ const ProductDetails = () => {
                                             </ul>
                                         </div>
                                     )}
-                                    <h5>Період та умови зберігання:</h5>
+                                    <h5>Period of storage:</h5>
                                     <p>{product.umovy}</p>
                                 </Card.Text>
                             </Card.Body>
@@ -212,7 +212,7 @@ const ProductDetails = () => {
 
                         <Card className="mb-4" style={{ backgroundColor: '#e9e6e3', textAlign: 'start', borderRadius: '15px' }}>
                             <Card.Body>
-                                <Card.Title>РЕЦЕПТ</Card.Title>
+                                <Card.Title>RECIPE</Card.Title>
                                 <Card.Text>{product.recipe}</Card.Text>
                             </Card.Body>
                         </Card>
@@ -256,7 +256,7 @@ const ProductDetails = () => {
 
             <Container>
                 <h4 className="text-start pt-3">
-                    Вам також сподобається
+                    You also like
                 </h4>
             </Container>
             <Recomendations />

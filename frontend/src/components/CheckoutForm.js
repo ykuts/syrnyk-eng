@@ -12,12 +12,12 @@ const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, s
           <div className="delivery-details mt-4">
             <Card>
               <Card.Body>
-                <h5 className="mb-3">Адреса доставки</h5>
+                <h5 className="mb-3">Delivery Address</h5>
                 <Form.Group className="mb-3">
                   <Form.Control
                     type="text"
                     name="street"
-                    placeholder="Вулиця"
+                    placeholder="Street"
                     value={formData.street}
                     onChange={handleChange}
                     required
@@ -30,7 +30,7 @@ const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, s
                       <Form.Control
                         type="text"
                         name="house"
-                        placeholder="Будинок"
+                        placeholder="House"
                         value={formData.house}
                         onChange={handleChange}
                         required
@@ -42,7 +42,7 @@ const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, s
                       <Form.Control
                         type="text"
                         name="apartment"
-                        placeholder="Квартира (необов'язково)"
+                        placeholder="Apartment (optional)"
                         value={formData.apartment}
                         onChange={handleChange}
                       />
@@ -56,7 +56,7 @@ const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, s
                       <Form.Control
                         type="text"
                         name="city"
-                        placeholder="Місто"
+                        placeholder="City"
                         value={formData.city}
                         onChange={handleChange}
                         required
@@ -68,7 +68,7 @@ const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, s
                       <Form.Control
                         type="text"
                         name="postalCode"
-                        placeholder="Індекс"
+                        placeholder="Postal Code"
                         value={formData.postalCode}
                         onChange={handleChange}
                         required
@@ -81,77 +81,27 @@ const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, s
           </div>
         );
 
-        case 'RAILWAY_STATION':
-      return (
-        <div className="delivery-details mt-4">
-          <Card>
-            <Card.Body>
-              <h5 className="mb-3">Виберіть станцію</h5>
-              <Form.Group className="mb-4">
-                <Form.Select
-                  name="stationId"
-                  value={formData.stationId}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Оберіть станцію</option>
-                  {railwayStations.map(station => (
-                    <option key={station.id} value={station.id}>
-                      {station.city} - {station.name}
-                    </option>
-                  ))}
-                </Form.Select>
-              </Form.Group>
-
-              {formData.stationId && (
-                <div className="mt-4">
-                  <Card className="bg-light">
-                    <Card.Body>
-                      {railwayStations.find(s => s.id === parseInt(formData.stationId))?.photo && (
-                        <img
-                          src={`${process.env.REACT_APP_API_URL}${railwayStations.find(s => s.id === parseInt(formData.stationId)).photo}`}
-                          alt="Місце зустрічі"
-                          className="img-fluid rounded mb-3 w-100"
-                        />
-                      )}
-                      <div className="mb-3">
-                        <strong>Місце зустрічі:</strong>
-                        <p className="mb-0 mt-1">
-                          {railwayStations.find(s => s.id === parseInt(formData.stationId))?.meetingPoint}
-                        </p>
-                      </div>
-
-                      <Form.Group>
-                        <Form.Label className="fw-medium">Оберіть час зустрічі</Form.Label>
-                        <Form.Control
-                          type="datetime-local"
-                          name="meetingTime"
-                          value={formData.meetingTime}
-                          onChange={handleChange}
-                          min={new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 16)}
-                          required
-                        />
-                      </Form.Group>
-                    </Card.Body>
-                  </Card>
-                </div>
-              )}
-            </Card.Body>
-          </Card>
-        </div>
-      );
-
-      /* case 'RAILWAY_STATION':
+      case 'RAILWAY_STATION':
         return (
           <div className="delivery-details mt-4">
             <Card>
               <Card.Body>
-                <h5 className="mb-3">Виберіть станцію</h5>
-                <StationSelector
-                  stations={railwayStations}
-                  selectedStation={formData.stationId}
-                  onChange={handleChange}
-                />
+                <h5 className="mb-3">Select Station</h5>
+                <Form.Group className="mb-4">
+                  <Form.Select
+                    name="stationId"
+                    value={formData.stationId}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Choose a station</option>
+                    {railwayStations.map(station => (
+                      <option key={station.id} value={station.id}>
+                        {station.city} - {station.name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
 
                 {formData.stationId && (
                   <div className="mt-4">
@@ -160,24 +110,25 @@ const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, s
                         {railwayStations.find(s => s.id === parseInt(formData.stationId))?.photo && (
                           <img
                             src={`${process.env.REACT_APP_API_URL}${railwayStations.find(s => s.id === parseInt(formData.stationId)).photo}`}
-                            alt="Місце зустрічі"
+                            alt="Meeting Point"
                             className="img-fluid rounded mb-3 w-100"
                           />
                         )}
                         <div className="mb-3">
-                          <strong>Місце зустрічі:</strong>
+                          <strong>Meeting Point:</strong>
                           <p className="mb-0 mt-1">
                             {railwayStations.find(s => s.id === parseInt(formData.stationId))?.meetingPoint}
                           </p>
                         </div>
 
                         <Form.Group>
-                          <Form.Label className="fw-medium">Оберіть час зустрічі</Form.Label>
+                          <Form.Label className="fw-medium">Select Meeting Time</Form.Label>
                           <Form.Control
                             type="datetime-local"
                             name="meetingTime"
                             value={formData.meetingTime}
                             onChange={handleChange}
+                            min={new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 16)}
                             required
                           />
                         </Form.Group>
@@ -188,25 +139,25 @@ const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, s
               </Card.Body>
             </Card>
           </div>
-        ); */
+        );
 
       case 'PICKUP':
         return (
           <div className="delivery-details mt-4">
             <Card>
               <Card.Body>
-                <h5 className="mb-3">Деталі самовивозу</h5>
+                <h5 className="mb-3">Pickup Details</h5>
                 <div className="bg-light p-3 rounded mb-4">
                   <h6 className="mb-2">{stores[0].name}</h6>
                   <p className="mb-2">{stores[0].address}, {stores[0].city}</p>
-                  <p className="mb-2"><strong>Графік роботи:</strong> {stores[0].workingHours}</p>
+                  <p className="mb-2"><strong>Working Hours:</strong> {stores[0].workingHours}</p>
                   {stores[0].phone && (
-                    <p className="mb-0"><strong>Телефон:</strong> {stores[0].phone}</p>
+                    <p className="mb-0"><strong>Phone:</strong> {stores[0].phone}</p>
                   )}
                 </div>
 
                 <Form.Group>
-                  <Form.Label className="fw-medium">Оберіть час самовивозу</Form.Label>
+                  <Form.Label className="fw-medium">Select Pickup Time</Form.Label>
                   <Form.Control
                     type="datetime-local"
                     name="pickupTime"
@@ -228,7 +179,7 @@ const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, s
   return (
     <div className="checkout-form">
       <section className="mb-5">
-        <h4 className="mb-3">Особисті дані</h4>
+        <h4 className="mb-3">Personal Information</h4>
         <Card>
           <Card.Body>
             <Row>
@@ -237,7 +188,7 @@ const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, s
                   <Form.Control
                     type="text"
                     name="firstName"
-                    placeholder="Ім'я"
+                    placeholder="First Name"
                     value={formData.firstName}
                     onChange={handleChange}
                     required
@@ -251,7 +202,7 @@ const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, s
                   <Form.Control
                     type="text"
                     name="lastName"
-                    placeholder="Прізвище"
+                    placeholder="Last Name"
                     value={formData.lastName}
                     onChange={handleChange}
                     required
@@ -279,7 +230,7 @@ const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, s
               <Form.Control
                 type="tel"
                 name="phone"
-                placeholder="Телефон"
+                placeholder="Phone"
                 value={formData.phone}
                 onChange={handleChange}
                 required
@@ -291,13 +242,13 @@ const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, s
         </Card>
       </section>
       {isAuthenticated && (
-                <Form.Text className="text-muted">
-                  Для зміни особистих даних перейдіть до налаштувань профілю
-                </Form.Text>
-              )}
+        <Form.Text className="text-muted">
+          To change personal information, please go to profile settings
+        </Form.Text>
+      )}
 
       <section className="mb-5">
-        <h4 className="mb-3">Спосіб доставки</h4>
+        <h4 className="mb-3">Delivery Method</h4>
         <DeliveryMethodSelector
           selectedMethod={formData.deliveryType}
           onChange={handleChange}
@@ -306,7 +257,7 @@ const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, s
       </section>
 
       <section className="mb-5">
-        <h4 className="mb-3">Спосіб оплати</h4>
+        <h4 className="mb-3">Payment Method</h4>
         <PaymentMethodSelector
           selectedMethod={formData.paymentMethod}
           onChange={handleChange}
@@ -314,7 +265,7 @@ const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, s
       </section>
 
       <section className="mb-5">
-        <h4 className="mb-3">Коментар до замовлення</h4>
+        <h4 className="mb-3">Order Comments</h4>
         <Card>
           <Card.Body>
             <Form.Control
@@ -323,7 +274,7 @@ const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, s
               rows={3}
               value={formData.notes}
               onChange={handleChange}
-              placeholder="Додаткова інформація до замовлення"
+              placeholder="Additional information for the order"
             />
           </Card.Body>
         </Card>
