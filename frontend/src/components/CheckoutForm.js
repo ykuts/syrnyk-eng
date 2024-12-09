@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Row, Col, Card } from 'react-bootstrap';
 import DeliveryMethodSelector from './DeliveryMethodSelector';
 import PaymentMethodSelector from './PaymentMethodSelector';
-//import StationSelector from './StationSelector';
+import StationSelector from './StationSelector';
 
 const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, stores, isAuthenticated }) => {
   const renderDeliveryFields = () => {
@@ -88,54 +88,15 @@ const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, s
               <Card.Body>
                 <h5 className="mb-3">Select Station</h5>
                 <Form.Group className="mb-4">
-                  <Form.Select
-                    name="stationId"
-                    value={formData.stationId}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">Choose a station</option>
-                    {railwayStations.map(station => (
-                      <option key={station.id} value={station.id}>
-                        {station.city} - {station.name}
-                      </option>
-                    ))}
-                  </Form.Select>
+                <StationSelector 
+  stations={railwayStations}
+  selectedStation={formData.stationId}
+  onChange={handleChange}
+  meetingTime={formData.meetingTime} // Pass meeting time from form data
+/>
                 </Form.Group>
 
-                {formData.stationId && (
-                  <div className="mt-4">
-                    <Card className="bg-light">
-                      <Card.Body>
-                        {railwayStations.find(s => s.id === parseInt(formData.stationId))?.photo && (
-                          <img
-                            src={`${process.env.REACT_APP_API_URL}${railwayStations.find(s => s.id === parseInt(formData.stationId)).photo}`}
-                            alt="Meeting Point"
-                            className="img-fluid rounded mb-3 w-100"
-                          />
-                        )}
-                        <div className="mb-3">
-                          <strong>Meeting Point:</strong>
-                          <p className="mb-0 mt-1">
-                            {railwayStations.find(s => s.id === parseInt(formData.stationId))?.meetingPoint}
-                          </p>
-                        </div>
-
-                        <Form.Group>
-                          <Form.Label className="fw-medium">Select Meeting Time</Form.Label>
-                          <Form.Control
-                            type="datetime-local"
-                            name="meetingTime"
-                            value={formData.meetingTime}
-                            onChange={handleChange}
-                            min={new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 16)}
-                            required
-                          />
-                        </Form.Group>
-                      </Card.Body>
-                    </Card>
-                  </div>
-                )}
+                
               </Card.Body>
             </Card>
           </div>

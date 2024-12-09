@@ -5,6 +5,7 @@ import { Form, Button, Alert, ButtonGroup, Container, Table } from 'react-bootst
 import { Trash, Plus, Minus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CheckoutForm from './CheckoutForm';
+import { API_URL, getApiUrl } from '../config';
 
 const STORE_ADDRESS = {
   id: 1,
@@ -69,7 +70,7 @@ const CheckoutPage = () => {
   useEffect(() => {
     const fetchDeliveryData = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/railway-stations`);
+        const response = await fetch(getApiUrl('/api/railway-stations'));
         const result = await response.json();
         setRailwayStations(result.data);
       } catch (error) {
@@ -79,7 +80,7 @@ const CheckoutPage = () => {
         setLoading(false);
       }
     };
-
+  
     fetchDeliveryData();
   }, []);
 
@@ -180,6 +181,7 @@ const CheckoutPage = () => {
   
     try {
       const orderData = {
+        
         userId: user?.id,
         deliveryType: formData.deliveryType,
         totalAmount: totalPrice,
