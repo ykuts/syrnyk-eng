@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Row, Col, Card } from 'react-bootstrap';
 import DeliveryMethodSelector from './DeliveryMethodSelector';
 import PaymentMethodSelector from './PaymentMethodSelector';
-import StationSelector from './StationSelector';
+//import StationSelector from './StationSelector';
 
 const CheckoutForm = ({ formData, handleChange, deliveryType, railwayStations, stores, isAuthenticated }) => {
   const renderDeliveryFields = () => {
