@@ -1,4 +1,4 @@
-export const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+export const API_URL = process.env.REACT_APP_API_URL || 'https://syrnyk-eng-api.up.railway.app';
 
 export const getImageUrl = (imagePath) => {
     if (!imagePath) return '/assets/default-product.png';
