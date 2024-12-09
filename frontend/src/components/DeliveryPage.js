@@ -1,5 +1,7 @@
 import { Container, Row, Col  } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
+import { apiClient } from '../utils/api';
+import { getImageUrl } from '../config';
 import "./DeliveryPayment.css";
 import "./DeliveryContent.css";
 import './MeetingCard.css';
@@ -12,14 +14,8 @@ const DeliveryPage = () => {
   useEffect(() => {
     const fetchStations = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/railway-stations`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch stations');
-        }
-        const data = await response.json();
-        console.log('Received stations data:', data); // Debug output
+        const data = await apiClient.get('/api/railway-stations');
         setStations(data.data);
-        setError(null);
       } catch (err) {
         setError('Error loading station data');
         console.error('Error fetching stations:', err);
@@ -112,45 +108,34 @@ const ContentSection = ({ title, content }) => (
 );
 
 const MeetingCard = ({ city, station, location, imageSrc }) => {
-    const [imageError, setImageError] = useState(false);
-
-    console.log('MeetingCard props:', { city, station, location, imageSrc });
-
-    const getImageUrl = (path) => {
-      if (!path) return null;
-      if (path.startsWith('http')) return path;
-      const cleanPath = path.replace(/^\/uploads\//, '');
-      return `${process.env.REACT_APP_API_URL}/uploads/${cleanPath}`;
-    };
-
-    const defaultImageUrl = `${process.env.REACT_APP_API_URL}/uploads/default-station.jpg`;
-    const finalImageUrl = imageError ? defaultImageUrl : getImageUrl(imageSrc);
+  const [imageError, setImageError] = useState(false);
   
-    console.log('MeetingCard props:', { city, station, location, imageSrc });
-    console.log('Final image URL:', finalImageUrl);
+  // Get URLs with explicit 'station' type
+  const defaultImageUrl = getImageUrl(null, 'station');
+  const imageUrl = imageError ? defaultImageUrl : getImageUrl(imageSrc, 'station');
     
-    return (
-      <div className="meeting-card">
-        <div className="meeting-info">
-          <div className="city">{`City: ${city}`}</div>
-          <div className="station">{`Date/Time: ${station}`}</div>
-          <div className="location">Meeting Point:</div>
-          <div className="location">{`${location}`}</div>
-        </div>
-        <div className="meeting-image">
-          <img 
-            src={finalImageUrl || defaultImageUrl}
-            alt={`Meeting location at ${station}`} 
-            onError={(e) => {
-              console.log('Failed to load image:', e.target.src);
-              if (!imageError) {
-                setImageError(true);
-              }
-            }}
-          />
-        </div>
+  return (
+    <div className="meeting-card">
+      <div className="meeting-info">
+        <div className="city">{`City: ${city}`}</div>
+        <div className="station">{`Date/Time: ${station}`}</div>
+        <div className="location">Meeting Point:</div>
+        <div className="location">{`${location}`}</div>
       </div>
-    );
+      <div className="meeting-image">
+        <img 
+          src={imageUrl}
+          alt={`Meeting location at ${station}`} 
+          onError={(e) => {
+            console.log('Failed to load image:', e.target.src);
+            if (!imageError) {
+              setImageError(true);
+            }
+          }}
+        />
+      </div>
+    </div>
+  );
 };
 
 export default DeliveryPage;

@@ -13,7 +13,7 @@ const ProductCard = ({ product }) => {
     const quantity = cartItems.find((item) => item.id === product.id)?.quantity || 0;
 
     // URL image default
-    const defaultImageUrl = '/assets/default-product.png'; 
+   // const defaultImageUrl = '/assets/default-product.png'; 
 
     const handleAddToCart = () => {
         addToCart(product);
@@ -29,7 +29,8 @@ const ProductCard = ({ product }) => {
     };
 
     // Final image URL using centralized handler
-    const imageUrl = imageError ? defaultImageUrl : getImageUrl(product.image);
+    const defaultImageUrl = getImageUrl(null, 'product');
+    const imageUrl = imageError ? defaultImageUrl : getImageUrl(product.image, 'product');
 
     return (
         <Card style={{ backgroundColor: '#95c2d7', borderRadius: '20px' }} className="h-100 d-flex flex-column">
