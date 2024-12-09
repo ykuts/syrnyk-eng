@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Row from "react-bootstrap/esm/Row";
 import products from "../data/products.json"
-import ProductCardRec from "./ProductCardRec";
+import ProductCard from "./ProductCard";
 import Col from "react-bootstrap/esm/Col";
 import Container from "react-bootstrap/esm/Container";
 
@@ -45,7 +45,7 @@ const Recomendations = () => {
                         xs={12} sm={6} md={4} lg={3}
                         className="d-flex justify-content-center align-items-center p-3"
                     >
-                        <ProductCardRec product={product} />
+                        <ProductCard product={product} />
                     </Col>
                 ))}
             </Row>
