@@ -14,7 +14,7 @@ const DeliveryPage = () => {
   useEffect(() => {
     const fetchStations = async () => {
       try {
-        const data = await apiClient.get('/api/railway-stations');
+        const data = await apiClient.get('/railway-stations');
         setStations(data.data);
       } catch (err) {
         setError('Error loading station data');

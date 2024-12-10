@@ -35,12 +35,12 @@ const UserProfile = () => {
       const result = await updateProfile(formData);
       
       if (result.success) {
-        setSuccess('Профіль успішно оновлено');
+        setSuccess('Profile updated successfully');
       } else {
-        setError(result.error || 'Помилка оновлення профілю');
+        setError(result.error || 'Error updating profile');
       }
     } catch (err) {
-      setError('Помилка оновлення профілю');
+      setError('Error updating profile');
     } finally {
       setLoading(false);
     }
@@ -53,13 +53,13 @@ const UserProfile = () => {
           <Col md={3}>
             <Nav variant="pills" className="flex-column">
               <Nav.Item>
-                <Nav.Link eventKey="profile">Профіль</Nav.Link>
+                <Nav.Link eventKey="profile">Profile</Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link eventKey="delivery">Адреса доставки</Nav.Link>
+                <Nav.Link eventKey="delivery">Delivery Address</Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link eventKey="password">Зміна паролю</Nav.Link>
+                <Nav.Link eventKey="password">Change Password</Nav.Link>
               </Nav.Item>
             </Nav>
           </Col>
@@ -74,7 +74,7 @@ const UserProfile = () => {
                   <Row>
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Ім'я</Form.Label>
+                        <Form.Label>First Name</Form.Label>
                         <Form.Control
                           type="text"
                           name="firstName"
@@ -87,7 +87,7 @@ const UserProfile = () => {
                     
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Прізвище</Form.Label>
+                        <Form.Label>Last Name</Form.Label>
                         <Form.Control
                           type="text"
                           name="lastName"
@@ -109,7 +109,7 @@ const UserProfile = () => {
                   </Form.Group>
 
                   <Form.Group className="mb-3">
-                    <Form.Label>Телефон</Form.Label>
+                    <Form.Label>Phone</Form.Label>
                     <Form.Control
                       type="tel"
                       name="phone"
@@ -124,14 +124,14 @@ const UserProfile = () => {
                     variant="primary"
                     disabled={loading}
                   >
-                    {loading ? 'Збереження...' : 'Зберегти зміни'}
+                    {loading ? 'Saving...' : 'Save Changes'}
                   </Button>
                 </Form>
               </Tab.Pane>
 
               <Tab.Pane eventKey="delivery">
                 <Form.Group className="mb-3">
-                  <Form.Label>Адреса доставки за замовчуванням</Form.Label>
+                  <Form.Label>Default Delivery Address</Form.Label>
                   <Form.Control
                     as="textarea"
                     rows={3}
@@ -147,7 +147,7 @@ const UserProfile = () => {
                   variant="primary"
                   disabled={loading}
                 >
-                  {loading ? 'Збереження...' : 'Зберегти адресу'}
+                  {loading ? 'Saving...' : 'Save Address'}
                 </Button>
               </Tab.Pane>
 
@@ -163,7 +163,7 @@ const UserProfile = () => {
   );
 };
 
-// Компонент изменения пароля
+// Password change component
 const ChangePassword = () => {
   const [formData, setFormData] = useState({
     currentPassword: '',
@@ -183,7 +183,7 @@ const ChangePassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Добавить логику изменения пароля
+    // Add password change logic
   };
 
   return (
@@ -192,7 +192,7 @@ const ChangePassword = () => {
       {success && <Alert variant="success">{success}</Alert>}
 
       <Form.Group className="mb-3">
-        <Form.Label>Поточний пароль</Form.Label>
+        <Form.Label>Current Password</Form.Label>
         <Form.Control
           type="password"
           name="currentPassword"
@@ -203,7 +203,7 @@ const ChangePassword = () => {
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <Form.Label>Новий пароль</Form.Label>
+        <Form.Label>New Password</Form.Label>
         <Form.Control
           type="password"
           name="newPassword"
@@ -214,7 +214,7 @@ const ChangePassword = () => {
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <Form.Label>Підтвердження нового пароля</Form.Label>
+        <Form.Label>Confirm New Password</Form.Label>
         <Form.Control
           type="password"
           name="confirmPassword"
@@ -229,7 +229,7 @@ const ChangePassword = () => {
         variant="primary"
         disabled={loading}
       >
-        {loading ? 'Зміна паролю...' : 'Змінити пароль'}
+        {loading ? 'Changing Password...' : 'Change Password'}
       </Button>
     </Form>
   );

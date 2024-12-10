@@ -1,7 +1,8 @@
 // components/OrderHistory.js
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Badge, Button, Modal, Row, Col, Card } from 'react-bootstrap';
-import axios from 'axios';
+import { apiClient } from '../utils/api';
+import { getImageUrl } from '../config'
 import { format } from 'date-fns';
 
 const OrderHistory = () => {
@@ -18,11 +19,16 @@ const OrderHistory = () => {
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/orders`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setOrders(response.data.orders);
+      const customHeaders = {
+        Authorization: `Bearer ${token}`
+      };
+      
+      // Using apiClient.get with the endpoint and custom headers
+      const response = await apiClient.get('/users/orders', customHeaders);
+      setOrders(response.orders);
+      
     } catch (err) {
+      console.error('Error fetching orders:', err);
       setError('Failed to fetch orders');
     } finally {
       setLoading(false);
@@ -31,29 +37,29 @@ const OrderHistory = () => {
 
   const getStatusBadge = (status) => {
     const variants = {
-      PENDING: { bg: 'warning', text: 'В обробці' },
-      CONFIRMED: { bg: 'info', text: 'Підтверджено' },
-      DELIVERED: { bg: 'success', text: 'Доставлено' },
-      CANCELLED: { bg: 'danger', text: 'Скасовано' }
+      PENDING: { bg: 'warning', text: 'Processing' },
+      CONFIRMED: { bg: 'info', text: 'Confirmed' },
+      DELIVERED: { bg: 'success', text: 'Delivered' },
+      CANCELLED: { bg: 'danger', text: 'Cancelled' }
     };
     return <Badge bg={variants[status].bg}>{variants[status].text}</Badge>;
   };
 
   const formatDeliveryInfo = (order) => {
     if (order.addressDelivery) {
-      return `Доставка за адресою: ${order.addressDelivery.street}, ${order.addressDelivery.house}${
+      return `Delivery to address: ${order.addressDelivery.street}, ${order.addressDelivery.house}${
         order.addressDelivery.apartment ? `, кв. ${order.addressDelivery.apartment}` : ''
       }, ${order.addressDelivery.city}`;
     } else if (order.stationDelivery) {
-      return `Доставка на станцію: ${order.stationDelivery.station.name}, час: ${
+      return `Delivery to station: ${order.stationDelivery.station.name}, час: ${
         format(new Date(order.stationDelivery.meetingTime), 'dd.MM.yyyy HH:mm')
       }`;
     } else if (order.pickupDelivery) {
-      return `Самовивіз з: ${order.pickupDelivery.store.name}, час: ${
+      return `Pickup from: ${order.pickupDelivery.store.name}, час: ${
         format(new Date(order.pickupDelivery.pickupTime), 'dd.MM.yyyy HH:mm')
       }`;
     }
-    return 'Спосіб доставки не вказано';
+    return 'Delivery method not specified';
   };
 
   const OrderDetailsModal = ({ order, show, onHide }) => {
@@ -62,20 +68,20 @@ const OrderHistory = () => {
     return (
       <Modal show={show} onHide={onHide} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>Деталі замовлення #{order.id}</Modal.Title>
+          <Modal.Title>Order Details #{order.id}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Row>
             <Col>
               <Card className="mb-4">
                 <Card.Header>
-                  <h5 className="mb-0">Інформація про доставку</h5>
+                  <h5 className="mb-0">Delivery Information</h5>
                 </Card.Header>
                 <Card.Body>
                   <p>{formatDeliveryInfo(order)}</p>
                   <p>Статус: {getStatusBadge(order.status)}</p>
                   {order.trackingNumber && (
-                    <p>Номер відстеження: {order.trackingNumber}</p>
+                    <p>Tracking Number: {order.trackingNumber}</p>
                   )}
                 </Card.Body>
               </Card>
@@ -84,16 +90,16 @@ const OrderHistory = () => {
 
           <Card>
             <Card.Header>
-              <h5 className="mb-0">Товари</h5>
+              <h5 className="mb-0">Items</h5>
             </Card.Header>
             <Card.Body>
               <Table responsive>
                 <thead>
                   <tr>
-                    <th>Товар</th>
-                    <th>Кількість</th>
-                    <th>Ціна</th>
-                    <th>Сума</th>
+                  <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -103,10 +109,11 @@ const OrderHistory = () => {
                         <div className="d-flex align-items-center">
                           {item.product.image && (
                             <img 
-                              src={item.product.image} 
-                              alt={item.product.name} 
-                              style={{ width: '50px', marginRight: '10px' }}
-                            />
+                            // Using getImageUrl utility to get the correct image URL
+                            src={getImageUrl(item.product.image, 'product')} 
+                            alt={item.product.name} 
+                            style={{ width: '50px', marginRight: '10px' }}
+                          />
                           )}
                           {item.product.name}
                         </div>
@@ -119,12 +126,12 @@ const OrderHistory = () => {
                 </tbody>
                 <tfoot>
                   <tr>
-                    <td colSpan="3" className="text-end"><strong>Загальна сума:</strong></td>
+                    <td colSpan="3" className="text-end"><strong>Total Amount:</strong></td>
                     <td><strong>{order.totalAmount} CHF</strong></td>
                   </tr>
                   {order.discount && (
                     <tr>
-                      <td colSpan="3" className="text-end"><strong>Знижка:</strong></td>
+                      <td colSpan="3" className="text-end"><strong>Discount:</strong></td>
                       <td><strong>-{order.discount} CHF</strong></td>
                     </tr>
                   )}
@@ -136,7 +143,7 @@ const OrderHistory = () => {
           {order.notesClient && (
             <Card className="mt-4">
               <Card.Header>
-                <h5 className="mb-0">Примітки до замовлення</h5>
+                <h5 className="mb-0">Order Notes</h5>
               </Card.Header>
               <Card.Body>
                 <p>{order.notesClient}</p>
@@ -146,7 +153,7 @@ const OrderHistory = () => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={onHide}>
-            Закрити
+          Close
           </Button>
         </Modal.Footer>
       </Modal>
@@ -163,20 +170,20 @@ const OrderHistory = () => {
 
   return (
     <Container className="py-4">
-      <h2 className="mb-4">Історія замовлень</h2>
+      <h2 className="mb-4">Order History</h2>
 
       {orders.length === 0 ? (
-        <p>У вас поки немає замовлень</p>
+        <p>You don't have any orders yet</p>
       ) : (
         <Table responsive>
           <thead>
             <tr>
               <th>#</th>
-              <th>Дата</th>
-              <th>Статус</th>
-              <th>Спосіб доставки</th>
-              <th>Сума</th>
-              <th>Дії</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Delivery Method</th>
+              <th>Amount</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -196,7 +203,7 @@ const OrderHistory = () => {
                       setShowDetails(true);
                     }}
                   >
-                    Деталі
+                    Details
                   </Button>
                 </td>
               </tr>

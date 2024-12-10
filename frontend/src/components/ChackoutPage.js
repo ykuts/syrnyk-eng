@@ -5,7 +5,8 @@ import { Form, Button, Alert, ButtonGroup, Container, Table } from 'react-bootst
 import { Trash, Plus, Minus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CheckoutForm from './CheckoutForm';
-import { API_URL, getApiUrl } from '../config';
+import { getApiUrl } from '../config';
+import { apiClient } from '../utils/api';
 
 const STORE_ADDRESS = {
   id: 1,
@@ -180,8 +181,8 @@ const CheckoutPage = () => {
     setSubmitError(null);
   
     try {
+      // Prepare order data
       const orderData = {
-        
         userId: user?.id,
         deliveryType: formData.deliveryType,
         totalAmount: totalPrice,
@@ -196,6 +197,7 @@ const CheckoutPage = () => {
         }))
       };
   
+      // Add customer data for non-authenticated users
       if (!user) {
         orderData.customer = {
           firstName: formData.firstName,
@@ -205,7 +207,7 @@ const CheckoutPage = () => {
         };
       }
   
-      // Add corresponding data depending on delivery type
+      // Add delivery-specific data
       if (formData.deliveryType === 'ADDRESS') {
         orderData.addressDelivery = {
           street: formData.street,
@@ -221,36 +223,28 @@ const CheckoutPage = () => {
         };
       } else if (formData.deliveryType === 'PICKUP') {
         orderData.pickupDelivery = {
-          storeId: 1, // Using existing store ID from database
+          storeId: 1,
           pickupTime: new Date(formData.pickupTime).toISOString()
         };
       }
   
       console.log('Sending order data:', orderData);
   
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/orders`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(user?.token && { 'Authorization': `Bearer ${user.token}` })
-        },
-        body: JSON.stringify(orderData)
-      });
-  
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create order');
+      // Use apiClient utility to make the request
+      const headers = {};
+      if (user?.token) {
+        headers.Authorization = `Bearer ${user.token}`;
       }
-  
-      const result = await response.json();
+      
+      const result = await apiClient.post('/orders', orderData, headers);
       console.log('Order created:', result);
   
       setSubmitSuccess(true);
       clearCart();
       
     } catch (error) {
-      setSubmitError(`Error placing order: ${error.message}`);
       console.error('Order submission error:', error);
+      setSubmitError(error.message || 'Failed to create order');
     } finally {
       setIsSubmitting(false);
     }
