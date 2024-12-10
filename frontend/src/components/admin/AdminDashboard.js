@@ -1,5 +1,5 @@
 import { Container, Nav, Row, Col } from 'react-bootstrap';
-import { Boxes, Users, ShoppingCart, BarChart2, Truck } from 'lucide-react';
+import { Boxes, Users, ShoppingCart, Truck } from 'lucide-react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 
 const AdminDashboard = () => {
@@ -61,7 +61,7 @@ const AdminDashboard = () => {
                 Управління доставкою
               </Nav.Link>
             </Nav.Item>
-            <Nav.Item>
+            {/* <Nav.Item>
               <Nav.Link
                 eventKey="reports"
                 className="d-flex align-items-center gap-2 px-3 py-2"
@@ -69,7 +69,7 @@ const AdminDashboard = () => {
                 <BarChart2 size={20} />
                 Звіти
               </Nav.Link>
-            </Nav.Item>
+            </Nav.Item> */}
           </Nav>
         </Col>
         

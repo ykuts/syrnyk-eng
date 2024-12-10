@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 import { Table, Button } from 'react-bootstrap';
-import { useTranslation } from 'react-i18next';
+//import { useTranslation } from 'react-i18next';
 import { Edit, Trash2 } from 'lucide-react';
+import { getImageUrl } from '../../../../config';
 
 const ProductList = ({ products, onDelete, onEdit, onAddNew }) => {
-  const { t } = useTranslation();
+  //const { t } = useTranslation();
   // Состояние для отслеживания ошибок загрузки изображений
   const [imageErrors, setImageErrors] = useState({});
 
-  // Вспомогательная функция для формирования URL изображения
+  /* // Вспомогательная функция для формирования URL изображения
   const getImageUrl = (path) => {
     if (!path) return null;
     if (path.startsWith('http')) return path;
     // Убираем возможное дублирование /uploads/
     const cleanPath = path.replace(/^\/uploads\//, '');
     return `${process.env.REACT_APP_API_URL}/uploads/${cleanPath}`;
-  };
+  }; */
 
   // URL изображения по умолчанию
   const defaultImageUrl = '/placeholder.jpg';
@@ -54,20 +55,20 @@ const ProductList = ({ products, onDelete, onEdit, onAddNew }) => {
             <tr key={product.id}>
               <td>{product.id}</td>
               <td>
-                {product.image && !imageErrors[product.id] ? (
-                  <img 
-                    src={getImageUrl(product.image)}
-                    alt={product.name} 
-                    style={{ height: '40px', width: '40px', objectFit: 'cover' }} 
-                    onError={() => handleImageError(product.id)}
-                  />
-                ) : (
-                  <img 
-                    src={defaultImageUrl}
-                    alt="Placeholder" 
-                    style={{ height: '40px', width: '40px', objectFit: 'cover' }}
-                  />
-                )}
+              {product.image && !imageErrors[product.id] ? (
+                <img 
+                  src={getImageUrl(product.image, 'product')}
+                  alt={product.name} 
+                  style={{ height: '40px', width: '40px', objectFit: 'cover' }} 
+                  onError={() => handleImageError(product.id)}
+                />
+              ) : (
+                <img 
+                  src={defaultImageUrl}
+                  alt="Placeholder" 
+                  style={{ height: '40px', width: '40px', objectFit: 'cover' }}
+                />
+              )}
               </td>
               <td>{product.name}</td>
               <td>{product.category?.name}</td>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Badge, Button, Alert, Spinner, Modal, Form } from 'react-bootstrap';
 import { Eye, UserX, UserCheck } from 'lucide-react';
-import axios from 'axios';
+import { apiClient } from '../../../utils/api';
 
 const CustomersPanel = () => {
   const [customers, setCustomers] = useState([]);
@@ -20,26 +20,27 @@ const CustomersPanel = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/admin/users`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (Array.isArray(response.data)) {
-        setCustomers(response.data);
-      } else if (response.data && Array.isArray(response.data.users)) {
-        setCustomers(response.data.users);
+      const headers = {
+        'Authorization': `Bearer ${token}`
+      };
+  
+      // Используем путь из userRoutes, а не adminRoutes
+      const response = await apiClient.get('/users/admin/users', headers);
+  
+      if (Array.isArray(response)) {
+        setCustomers(response);
+      } else if (response && Array.isArray(response.users)) {
+        setCustomers(response.users);
       } else {
-        console.error('Unexpected data format:', response.data);
-        setError('Неправильний формат даних від сервера');
+        console.error('Unexpected data format:', response);
+        setError('Invalid data format from server');
         setCustomers([]);
       }
     } catch (err) {
-      if (err.response?.status === 403) {
-        setError('У вас нет прав доступа к этой странице');
+      if (err.message.includes('401')) {
+        setError('Authorization required. Please log in again.');
       } else {
-        setError('Ошибка при загрузке списка клиентов');
+        setError('Error loading customers');
       }
       console.error(err);
     } finally {
@@ -60,19 +61,25 @@ const CustomersPanel = () => {
   const handleStatusChange = async () => {
     try {
       const token = localStorage.getItem('token');
-      await axios.patch(
-        `${process.env.REACT_APP_API_URL}/api/users/admin/users/${statusAction.customer.id}/status`,
+      const headers = {
+        'Authorization': `Bearer ${token}`
+      };
+  
+      // Используем PATCH метод как определено в userRoutes
+      await apiClient.patch(
+        `/users/admin/users/${statusAction.customer.id}/status`, 
         { isActive: statusAction.newStatus },
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        }
+        headers
       );
+      
       setShowStatusModal(false);
       fetchCustomers();
     } catch (err) {
-      setError('Помилка при зміні статусу користувача');
+      if (err.message.includes('401')) {
+        setError('Authorization required. Please log in again.');
+      } else {
+        setError('Error changing user status');
+      }
       console.error(err);
     }
   };
@@ -87,23 +94,23 @@ const CustomersPanel = () => {
 
   return (
     <Container fluid>
-      <h2 className="mb-4">Управління клієнтами</h2>
+      <h2 className="mb-4">Customers management</h2>
       
       {error && <Alert variant="danger" onClose={() => setError(null)} dismissible>{error}</Alert>}
 
       {customers.length === 0 && !loading ? (
-        <Alert variant="info">Клієнтів не знайдено</Alert>
+        <Alert variant="info">Client not found</Alert>
       ) : (
         <Table responsive striped hover>
           <thead>
             <tr>
               <th>ID</th>
-              <th>Ім'я</th>
+              <th>Name</th>
               <th>Email</th>
-              <th>Телефон</th>
-              <th>Статус</th>
-              <th>Дата реєстрації</th>
-              <th>Дії</th>
+              <th>Phone</th>
+              <th>Status</th>
+              <th>Date registration</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -112,10 +119,10 @@ const CustomersPanel = () => {
                 <td>{customer.id}</td>
                 <td>{`${customer.firstName} ${customer.lastName}`}</td>
                 <td>{customer.email}</td>
-                <td>{customer.phone || 'Не вказано'}</td>
+                <td>{customer.phone || 'Not provided'}</td>
                 <td>
                   <Badge bg={customer.isActive ? 'success' : 'danger'}>
-                    {customer.isActive ? 'Активний' : 'Заблокований'}
+                    {customer.isActive ? 'Active' : 'Disabled'}
                   </Badge>
                 </td>
                 <td>{new Date(customer.createdAt).toLocaleDateString()}</td>
@@ -143,16 +150,16 @@ const CustomersPanel = () => {
         </Table>
       )}
 
-      {/* Модальне вікно з деталями користувача */}
+      {/* Modal with client's detailes */}
       <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Деталі клієнта</Modal.Title>
+          <Modal.Title>Client's detailes</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {selectedCustomer && (
             <Form>
               <Form.Group className="mb-3">
-                <Form.Label>Повне ім'я</Form.Label>
+                <Form.Label>Fill name</Form.Label>
                 <Form.Control 
                   readOnly 
                   value={`${selectedCustomer.firstName} ${selectedCustomer.lastName}`} 
@@ -163,18 +170,18 @@ const CustomersPanel = () => {
                 <Form.Control readOnly value={selectedCustomer.email} />
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label>Телефон</Form.Label>
+                <Form.Label>Phone</Form.Label>
                 <Form.Control readOnly value={selectedCustomer.phone || 'Не вказано'} />
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label>Адреса доставки за замовчуванням</Form.Label>
+                <Form.Label>Default delivery</Form.Label>
                 <Form.Control 
                   readOnly 
                   value={selectedCustomer.preferredDeliveryLocation || 'Не вказано'} 
                 />
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label>Дата реєстрації</Form.Label>
+                <Form.Label>Data of registration</Form.Label>
                 <Form.Control 
                   readOnly 
                   value={new Date(selectedCustomer.createdAt).toLocaleString()} 
@@ -185,28 +192,28 @@ const CustomersPanel = () => {
         </Modal.Body>
       </Modal>
 
-      {/* Модальне вікно підтвердження зміни статусу */}
+      {/* Modal conformation of status change */}
       <Modal show={showStatusModal} onHide={() => setShowStatusModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Підтвердження дії</Modal.Title>
+          <Modal.Title>confirmation</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {statusAction.customer && (
             <p>
-              Ви дійсно бажаєте {statusAction.newStatus ? 'активувати' : 'деактивувати'} користувача{' '}
+              Do you want to {statusAction.newStatus ? 'activate' : 'deactivate'} client{' '}
               <strong>{statusAction.customer.firstName} {statusAction.customer.lastName}</strong>?
             </p>
           )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowStatusModal(false)}>
-            Скасувати
+            Cancel
           </Button>
           <Button
             variant={statusAction.newStatus ? "success" : "danger"}
             onClick={handleStatusChange}
           >
-            {statusAction.newStatus ? 'Активувати' : 'Деактивувати'}
+            {statusAction.newStatus ? 'Activate' : 'Deactivate'}
           </Button>
         </Modal.Footer>
       </Modal>

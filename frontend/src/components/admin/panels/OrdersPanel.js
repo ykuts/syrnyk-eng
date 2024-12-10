@@ -11,6 +11,7 @@ import {
   Row,
   Col
 } from 'react-bootstrap';
+import { apiClient } from '../../../utils/api';
 
 const OrdersPanel = () => {
   const [orders, setOrders] = useState([]);
@@ -29,25 +30,21 @@ const OrdersPanel = () => {
 
   const fetchInitialData = async () => {
     try {
-      const [ordersResponse, productsResponse] = await Promise.all([
-        fetch(`${process.env.REACT_APP_API_URL}/api/orders/all`),
-        fetch(`${process.env.REACT_APP_API_URL}/api/products`)
-      ]);
-
-      if (!ordersResponse.ok || !productsResponse.ok) {
-        throw new Error('Failed to fetch data');
-      }
-
+      const token = localStorage.getItem('token');
+      const headers = {
+        'Authorization': `Bearer ${token}`
+      };
+  
       const [ordersData, productsData] = await Promise.all([
-        ordersResponse.json(),
-        productsResponse.json()
+        apiClient.get('/admin/orders', headers), // Changed from /orders/all to /admin/orders
+        apiClient.get('/products', headers)
       ]);
-
+  
       const productsMap = productsData.reduce((acc, product) => {
         acc[product.id] = product;
         return acc;
       }, {});
-
+  
       setOrders(ordersData);
       setProducts(productsMap);
       
@@ -104,45 +101,45 @@ const OrdersPanel = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/orders/${orderId}/status`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update order status');
-      }
-
+      const token = localStorage.getItem('token');
+      const headers = {
+        'Authorization': `Bearer ${token}`
+      };
+  
+      await apiClient.post(`/admin/orders/${orderId}`, { status: newStatus }, headers);
+      
       setOrders(orders.map(order => 
         order.id === orderId ? { ...order, status: newStatus } : order
       ));
     } catch (err) {
-      setError(err.message);
+      if (err.message.includes('401')) {
+        setError('Authorization required. Please log in again.');
+      } else {
+        setError('Error updating order status');
+      }
+      console.error(err);
     }
   };
 
   const handlePaymentStatusChange = async (orderId, newStatus) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/orders/${orderId}/payment-status`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ paymentStatus: newStatus }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update payment status');
-      }
-
+      const token = localStorage.getItem('token');
+      const headers = {
+        'Authorization': `Bearer ${token}`
+      };
+  
+      await apiClient.post(`/admin/orders/${orderId}/payment-status`, { paymentStatus: newStatus }, headers);
+      
       setOrders(orders.map(order => 
         order.id === orderId ? { ...order, paymentStatus: newStatus } : order
       ));
     } catch (err) {
-      setError(err.message);
+      if (err.message.includes('401')) {
+        setError('Authorization required. Please log in again.');
+      } else {
+        setError('Error updating payment status');
+      }
+      console.error(err);
     }
   };
 
@@ -150,19 +147,19 @@ const OrdersPanel = () => {
     setAdminComments(prev => ({ ...prev, [orderId]: comment }));
     
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/orders/${orderId}/notes`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ notesAdmin: comment }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update admin notes');
-      }
+      const token = localStorage.getItem('token');
+      const headers = {
+        'Authorization': `Bearer ${token}`
+      };
+  
+      await apiClient.post(`/admin/orders/${orderId}/notes`, { notesAdmin: comment }, headers);
     } catch (err) {
-      setError(err.message);
+      if (err.message.includes('401')) {
+        setError('Authorization required. Please log in again.');
+      } else {
+        setError('Error updating admin notes');
+      }
+      console.error(err);
     }
   };
 

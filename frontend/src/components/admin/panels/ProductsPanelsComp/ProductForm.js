@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
-import { useTranslation } from 'react-i18next';
+//import { useTranslation } from 'react-i18next';
 import ImageManager from './ImageManager';
 
 const ProductForm = ({ show, onHide, onSave, product, categories, loading }) => {
-  const { t } = useTranslation();
+  /* const { t } = useTranslation(); */
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -60,23 +60,21 @@ const ProductForm = ({ show, onHide, onSave, product, categories, loading }) => 
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Преобразуем данные перед отправкой
     const submitData = {
       ...formData,
       price: parseFloat(formData.price),
       stock: parseInt(formData.stock),
       categoryId: parseInt(formData.categoryId),
-      // Убедимся, что assortment всегда массив
+      // Ensure assortment is always an array
       assortment: formData.assortment
         ? formData.assortment
             .split('\n')
             .map(item => item.trim())
             .filter(item => item)
         : [],
-      // Убедимся, что images всегда массив
-        images: Array.isArray(formData.images) ? formData.images : [],
-        image: formData.image || ''
-        /* images: formData.image ? [formData.image] : [] */
+      // Ensure images is always an array and image is a string
+      images: Array.isArray(formData.images) ? formData.images : [],
+      image: formData.image || ''
     };
   
     onSave(submitData);

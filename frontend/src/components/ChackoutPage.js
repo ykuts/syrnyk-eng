@@ -250,7 +250,7 @@ const CheckoutPage = () => {
     }
   };
 
-  const getDeliveryData = () => {
+  /* const getDeliveryData = () => {
     switch (formData.deliveryType) {
       case 'ADDRESS':
         return {
@@ -273,7 +273,7 @@ const CheckoutPage = () => {
       default:
         return {};
     }
-  };
+  }; */
 
   if (loading) {
     return (
