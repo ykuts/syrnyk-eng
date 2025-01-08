@@ -35,7 +35,6 @@ const DeliveryPanel = () => {
     fetchStations();
   }, []);
 
-  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -57,17 +56,17 @@ const DeliveryPanel = () => {
   
       const response = await apiClient.upload('/upload/stations', formData);
     
-    setFormData(prev => ({
-      ...prev,
-      photo: response.url // Убедитесь, что сервер возвращает URL в этом формате
-    }));
-  } catch (err) {
-    setError('Error uploading photo');
-    console.error('Error uploading photo:', err);
-  } finally {
-    setUploadingPhoto(false);
-  }
-};
+      setFormData(prev => ({
+        ...prev,
+        photo: response.url // Make sure server returns URL in this format
+      }));
+    } catch (err) {
+      setError('Error uploading photo');
+      console.error('Error uploading photo:', err);
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -76,10 +75,10 @@ const DeliveryPanel = () => {
   
     try {
       if (selectedStation) {
-        // Используем PUT для обновления
+        // Use PUT for update
         await apiClient.put(`/railway-stations/${selectedStation.id}`, formData);
       } else {
-        // Используем POST для создания
+        // Use POST for creation
         await apiClient.post('/railway-stations', formData);
       }
       
@@ -102,7 +101,6 @@ const DeliveryPanel = () => {
         // Delete photo first if exists
         if (station.photo) {
           const filename = station.photo.split('/').pop();
-          // Используем fetch напрямую для DELETE запроса
           await fetch(`${API_URL}/api/upload/stations/${filename}`, {
             method: 'DELETE',
           });
@@ -139,14 +137,14 @@ const DeliveryPanel = () => {
   };
 
   if (loading && stations.length === 0) {
-    return <div>Завантаження...</div>;
+    return <div>Loading...</div>;
   }
 
   return (
     <div>
       <Card className="mb-4">
         <Card.Header className="d-flex justify-content-between align-items-center">
-          <h5 className="mb-0">Управління залізничними станціями</h5>
+          <h5 className="mb-0">Railway Stations Management</h5>
           <Button
             variant="primary"
             onClick={() => {
@@ -157,7 +155,7 @@ const DeliveryPanel = () => {
             className="d-flex align-items-center gap-2"
           >
             <PlusCircle size={18} />
-            Додати станцію
+            Add Station
           </Button>
         </Card.Header>
         <Card.Body>
@@ -166,11 +164,11 @@ const DeliveryPanel = () => {
           <Table responsive striped hover>
             <thead>
               <tr>
-                <th>Місто</th>
-                <th>Станція</th>
-                <th>Місце зустрічі</th>
-                <th>Фото</th>
-                <th>Дії</th>
+                <th>City</th>
+                <th>Station</th>
+                <th>Meeting Point</th>
+                <th>Photo</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -182,17 +180,17 @@ const DeliveryPanel = () => {
                   {<td>
                     {station.photo && (
                       <img
-                      src={checkImageUrl(station.photo)}
-                      alt={station.name}
-                      style={{ height: '50px', width: '50px', objectFit: 'cover' }}
-                      onError={(e) => {
-                        if (!e.target.dataset.tried) {
-                          console.error('Error loading image:', station.photo);
-                          e.target.dataset.tried = 'true';
-                          e.target.src = '/placeholder.jpg';
-                        }
-                      }}
-                    />
+                        src={checkImageUrl(station.photo)}
+                        alt={station.name}
+                        style={{ height: '50px', width: '50px', objectFit: 'cover' }}
+                        onError={(e) => {
+                          if (!e.target.dataset.tried) {
+                            console.error('Error loading image:', station.photo);
+                            e.target.dataset.tried = 'true';
+                            e.target.src = '/placeholder.jpg';
+                          }
+                        }}
+                      />
                     )}
                   </td>}
                   <td>
@@ -222,13 +220,13 @@ const DeliveryPanel = () => {
       <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>
-            {selectedStation ? 'Редагувати станцію' : 'Додати нову станцію'}
+            {selectedStation ? 'Edit Station' : 'Add New Station'}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-              <Form.Label>Місто</Form.Label>
+              <Form.Label>City</Form.Label>
               <Form.Control
                 type="text"
                 name="city"
@@ -239,7 +237,7 @@ const DeliveryPanel = () => {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Назва станції</Form.Label>
+              <Form.Label>Station Name</Form.Label>
               <Form.Control
                 type="text"
                 name="name"
@@ -250,7 +248,7 @@ const DeliveryPanel = () => {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Місце зустрічі</Form.Label>
+              <Form.Label>Meeting Point</Form.Label>
               <Form.Control
                 type="text"
                 name="meetingPoint"
@@ -261,7 +259,7 @@ const DeliveryPanel = () => {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Фото станції</Form.Label>
+              <Form.Label>Station Photo</Form.Label>
               <div>
                 {formData.photo && (
                   <div className="mb-2">
@@ -278,20 +276,20 @@ const DeliveryPanel = () => {
                   accept="image/*"
                   disabled={uploadingPhoto}
                 />
-                {uploadingPhoto && <div className="mt-2">Завантаження фото...</div>}
+                {uploadingPhoto && <div className="mt-2">Uploading photo...</div>}
               </div>
             </Form.Group>
 
             <div className="d-flex justify-content-end gap-2">
               <Button variant="secondary" onClick={() => setShowModal(false)}>
-                Скасувати
+                Cancel
               </Button>
               <Button
                 variant="primary"
                 type="submit"
                 disabled={loading || uploadingPhoto}
               >
-                {loading ? 'Збереження...' : 'Зберегти'}
+                {loading ? 'Saving...' : 'Save'}
               </Button>
             </div>
           </Form>

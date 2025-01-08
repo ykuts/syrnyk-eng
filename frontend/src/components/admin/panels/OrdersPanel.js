@@ -36,7 +36,7 @@ const OrdersPanel = () => {
       };
   
       const [ordersData, productsData] = await Promise.all([
-        apiClient.get('/admin/orders', headers), // Changed from /orders/all to /admin/orders
+        apiClient.get('/admin/orders', headers),
         apiClient.get('/products', headers)
       ]);
   
@@ -61,7 +61,7 @@ const OrdersPanel = () => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString('uk-UA', {
+    return new Date(dateString).toLocaleString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -85,17 +85,17 @@ const OrdersPanel = () => {
       case 'ADDRESS':
         return order.addressDelivery ? 
           `${order.addressDelivery.city}, ${order.addressDelivery.street} ${order.addressDelivery.house}` :
-          'Адреса не вказана';
+          'Address not specified';
       case 'RAILWAY_STATION':
         return order.stationDelivery ?
-          `Залізнична станція: ${order.stationDelivery.station?.name}, Час: ${formatDate(order.stationDelivery.meetingTime)}` :
-          'Станція не вказана';
+          `Railway Station: ${order.stationDelivery.station?.name}, Time: ${formatDate(order.stationDelivery.meetingTime)}` :
+          'Station not specified';
       case 'PICKUP':
         return order.pickupDelivery ?
-          `Самовивіз: ${order.pickupDelivery.store?.name}, Час: ${formatDate(order.pickupDelivery.pickupTime)}` :
-          'Магазин не вказаний';
+          `Pickup: ${order.pickupDelivery.store?.name}, Time: ${formatDate(order.pickupDelivery.pickupTime)}` :
+          'Store not specified';
       default:
-        return 'Тип доставки не вказаний';
+        return 'Delivery type not specified';
     }
   };
 
@@ -167,7 +167,7 @@ const OrdersPanel = () => {
     return (
       <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '200px' }}>
         <Spinner animation="border" role="status">
-          <span className="visually-hidden">Завантаження...</span>
+          <span className="visually-hidden">Loading...</span>
         </Spinner>
       </Container>
     );
@@ -177,7 +177,7 @@ const OrdersPanel = () => {
     return (
       <Container className="mt-4">
         <Alert variant="danger">
-          Помилка: {error}
+          Error: {error}
         </Alert>
       </Container>
     );
@@ -204,51 +204,51 @@ const OrdersPanel = () => {
 
   return (
     <Container fluid className="py-4">
-      <h1 className="mb-4">Замовлення</h1>
+      <h1 className="mb-4">Orders</h1>
       
       <Row className="mb-4">
         <Col md={3}>
           <Form.Group>
-            <Form.Label>Статус замовлення</Form.Label>
+            <Form.Label>Order Status</Form.Label>
             <Form.Select 
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
             >
-              <option value="ALL">Всі статуси</option>
-              <option value="PENDING">Нові замовлення</option>
-              <option value="CONFIRMED">Підтверджені</option>
-              <option value="DELIVERED">Виконані</option>
-              <option value="CANCELLED">Скасовані</option>
+              <option value="ALL">All Statuses</option>
+              <option value="PENDING">New Orders</option>
+              <option value="CONFIRMED">Confirmed</option>
+              <option value="DELIVERED">Completed</option>
+              <option value="CANCELLED">Cancelled</option>
             </Form.Select>
           </Form.Group>
         </Col>
         
         <Col md={3}>
           <Form.Group>
-            <Form.Label>Статус оплати</Form.Label>
+            <Form.Label>Payment Status</Form.Label>
             <Form.Select
               value={filterPaymentStatus}
               onChange={(e) => setFilterPaymentStatus(e.target.value)}
             >
-              <option value="ALL">Всі статуси</option>
-              <option value="PENDING">Очікує оплати</option>
-              <option value="PAID">Оплачено</option>
-              <option value="REFUNDED">Повернення</option>
+              <option value="ALL">All Statuses</option>
+              <option value="PENDING">Pending Payment</option>
+              <option value="PAID">Paid</option>
+              <option value="REFUNDED">Refunded</option>
             </Form.Select>
           </Form.Group>
         </Col>
         
         <Col md={3}>
           <Form.Group>
-            <Form.Label>Сортування</Form.Label>
+            <Form.Label>Sort By</Form.Label>
             <Form.Select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
             >
-              <option value="date_desc">Спочатку нові</option>
-              <option value="date_asc">Спочатку старі</option>
-              <option value="amount_desc">Спочатку дорожчі</option>
-              <option value="amount_asc">Спочатку дешевші</option>
+              <option value="date_desc">Newest First</option>
+              <option value="date_asc">Oldest First</option>
+              <option value="amount_desc">Highest Price</option>
+              <option value="amount_asc">Lowest Price</option>
             </Form.Select>
           </Form.Group>
         </Col>
@@ -257,8 +257,8 @@ const OrdersPanel = () => {
       <div className="mb-3">
         <p className="text-muted">
           {filteredOrders.length === orders.length 
-            ? `Всього замовлень: ${orders.length}`
-            : `Показано ${filteredOrders.length} з ${orders.length} замовлень`
+            ? `Total Orders: ${orders.length}`
+            : `Showing ${filteredOrders.length} of ${orders.length} orders`
           }
         </p>
       </div>
@@ -269,7 +269,7 @@ const OrdersPanel = () => {
               <Row>
                 <Col>
                   <div className="d-flex justify-content-between align-items-start mb-3">
-                    <h5 className="mb-0">Замовлення #{order.id} від {formatDate(order.createdAt)}</h5>
+                    <h5 className="mb-0">Order #{order.id} from {formatDate(order.createdAt)}</h5>
                     <Badge bg={getStatusVariant(order.status)}>
                       {order.status}
                     </Badge>
@@ -279,15 +279,15 @@ const OrdersPanel = () => {
               <Col md={8}>
                 <Row className="text-start">
                   <Col md={6}>
-                    <p><strong>Клієнт:</strong> {order.user?.firstName} {order.user?.lastName}</p>
+                    <p><strong>Customer:</strong> {order.user?.firstName} {order.user?.lastName}</p>
                     <p><strong>Email:</strong> {order.user?.email}</p>
-                    <p><strong>Телефон:</strong> {order.user?.phone}</p>
+                    <p><strong>Phone:</strong> {order.user?.phone}</p>
                   </Col>
                   <Col md={6}>
-                    <p><strong>Сума замовлення:</strong> {Number(order.totalAmount).toLocaleString()} CHF</p>
-                    <p><strong>Спосіб оплати:</strong> {order.paymentMethod}</p>
+                    <p><strong>Order Amount:</strong> {Number(order.totalAmount).toLocaleString()} CHF</p>
+                    <p><strong>Payment Method:</strong> {order.paymentMethod}</p>
                     <p>
-                      <strong>Статус оплати:</strong>{' '}
+                      <strong>Payment Status:</strong>{' '}
                       <Badge bg={getStatusVariant(order.paymentStatus)}>
                         {order.paymentStatus}
                       </Badge>
@@ -296,32 +296,32 @@ const OrdersPanel = () => {
                 </Row>
                 <Row className="mt-2">
                   <Col>
-                    <p><strong>Доставка:</strong> {getDeliveryDetails(order)}</p>
+                    <p><strong>Delivery:</strong> {getDeliveryDetails(order)}</p>
                   </Col>
                 </Row>
               </Col>
               <Col md={4}>
                 <Form.Group className="mb-3 text-start">
-                  <Form.Label><strong>Статус замовлення</strong></Form.Label>
+                  <Form.Label><strong>Order Status</strong></Form.Label>
                   <Form.Select 
                     value={order.status}
                     onChange={(e) => handleStatusChange(order.id, e.target.value)}
                   >
-                    <option value="PENDING">Нове замовлення</option>
-                    <option value="CONFIRMED">Підтверджено</option>
-                    <option value="DELIVERED">Виконано</option>
-                    <option value="CANCELLED">Скасовано</option>
+                    <option value="PENDING">New Order</option>
+                    <option value="CONFIRMED">Confirmed</option>
+                    <option value="DELIVERED">Completed</option>
+                    <option value="CANCELLED">Cancelled</option>
                   </Form.Select>
                 </Form.Group>
                 <Form.Group className="mb-3 text-start">
-                  <Form.Label><strong>Статус оплати</strong></Form.Label>
+                  <Form.Label><strong>Payment Status</strong></Form.Label>
                   <Form.Select 
                     value={order.paymentStatus}
                     onChange={(e) => handlePaymentStatusChange(order.id, e.target.value)}
                   >
-                    <option value="PENDING">Очікує оплати</option>
-                    <option value="PAID">Оплачено</option>
-                    <option value="REFUNDED">Повернення</option>
+                    <option value="PENDING">Pending Payment</option>
+                    <option value="PAID">Paid</option>
+                    <option value="REFUNDED">Refunded</option>
                   </Form.Select>
                 </Form.Group>
                 <Button
@@ -329,14 +329,14 @@ const OrdersPanel = () => {
                   onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)}
                   className="w-100"
                 >
-                  {expandedOrder === order.id ? 'Приховати деталі' : 'Показати деталі'}
+                  {expandedOrder === order.id ? 'Hide Details' : 'Show Details'}
                 </Button>
               </Col>
             </Row>
 
             {expandedOrder === order.id && (
               <div className="mt-4">
-                <h6 className="mb-3">Товари в замовленні:</h6>
+                <h6 className="mb-3">Products in Order:</h6>
                 <ListGroup className="mb-4">
                   {order.items.map((item) => (
                     <ListGroup.Item key={item.id} className="d-flex justify-content-between align-items-center">
@@ -347,10 +347,10 @@ const OrdersPanel = () => {
                         )}
                       </div>
                       <div className="text-end">
-                        <div>Кількість: {item.quantity}</div>
-                        <div>Ціна: {Number(item.price).toLocaleString()} CHF</div>
+                        <div>Quantity: {item.quantity}</div>
+                        <div>Price: {Number(item.price).toLocaleString()} CHF</div>
                         <div className="text-muted small">
-                          Всього: {(Number(item.price) * item.quantity).toLocaleString()} CHF
+                          Total: {(Number(item.price) * item.quantity).toLocaleString()} CHF
                         </div>
                       </div>
                     </ListGroup.Item>
@@ -358,18 +358,18 @@ const OrdersPanel = () => {
                 </ListGroup>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>Коментар адміністратора:</Form.Label>
+                  <Form.Label>Admin Comment:</Form.Label>
                   <Form.Control
                     as="textarea"
                     rows={3}
                     value={adminComments[order.id] || ''}
                     onChange={(e) => handleAdminCommentChange(order.id, e.target.value)}
-                    placeholder="Додати коментар..."
+                    placeholder="Add a comment..."
                   />
                 </Form.Group>
 
                 {order.trackingNumber && (
-                  <p><strong>Номер відстеження:</strong> {order.trackingNumber}</p>
+                  <p><strong>Tracking Number:</strong> {order.trackingNumber}</p>
                 )}
               </div>
             )}

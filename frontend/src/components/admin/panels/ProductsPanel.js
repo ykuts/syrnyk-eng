@@ -14,12 +14,10 @@ const ProductsPanel = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-
   useEffect(() => {
     fetchProducts();
     fetchCategories();
   }, []);
-
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -34,7 +32,6 @@ const ProductsPanel = () => {
     }
   };
 
- 
   const fetchCategories = async () => {
     try {
       const data = await apiClient.get('/categories');
@@ -49,7 +46,7 @@ const ProductsPanel = () => {
     if (!window.confirm('Are you sure you want to delete this product?')) {
       return;
     }
-  
+
     try {
       await apiClient.post(`/products/${id}`, {}, { method: 'DELETE' });
       await fetchProducts();
@@ -59,13 +56,13 @@ const ProductsPanel = () => {
     }
   };
 
-  // Открытие формы для редактирования
+  // Opening the form for editing
   const handleEdit = (product) => {
     setSelectedProduct(product);
     setShowModal(true);
   };
 
-  // Создание или обновление продукта
+  // Creating or updating a product
   const handleSave = async (productData) => {
     setLoading(true);
     try {
@@ -74,7 +71,7 @@ const ProductsPanel = () => {
       } else {
         await apiClient.post('/products/add', productData);
       }
-      
+
       await fetchProducts();
       setShowModal(false);
       setSelectedProduct(null);
@@ -97,8 +94,8 @@ const ProductsPanel = () => {
   return (
     <Container className="py-4">
       {error && <Alert variant="danger" onClose={() => setError(null)} dismissible>{error}</Alert>}
-      
-      <ProductList 
+
+      <ProductList
         products={products}
         onDelete={handleDelete}
         onEdit={handleEdit}

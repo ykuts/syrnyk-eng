@@ -73,7 +73,7 @@ const ImageManager = ({ images, mainImage, onImagesChange, onMainImageChange }) 
 
   return (
     <div className="mb-4">
-      <h5 className="mb-3">Изображения продукта</h5>
+      <h5 className="mb-3">Product image</h5>
       
       {error && (
         <Alert variant="danger" onClose={() => setError(null)} dismissible>
@@ -83,7 +83,7 @@ const ImageManager = ({ images, mainImage, onImagesChange, onMainImageChange }) 
 
       <div className="mb-3">
         <Form.Group>
-          <Form.Label>Загрузить изображения</Form.Label>
+          <Form.Label>Upload image</Form.Label>
           <Form.Control
             type="file"
             multiple
@@ -133,7 +133,7 @@ const ImageManager = ({ images, mainImage, onImagesChange, onMainImageChange }) 
                   bg="warning" 
                   className="position-absolute bottom-0 start-0 m-2"
                 >
-                  Главное фото
+                  Main photo
                 </Badge>
               )}
             </Card>

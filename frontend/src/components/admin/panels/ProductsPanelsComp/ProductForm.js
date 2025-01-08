@@ -21,7 +21,7 @@ const ProductForm = ({ show, onHide, onSave, product, categories, loading }) => 
     isActive: true
   });
 
-  // Заполняем форму при открытии для редактирования
+  // Fill the form when opening for editing
   useEffect(() => {
     if (product) {
       setFormData({
@@ -30,7 +30,7 @@ const ProductForm = ({ show, onHide, onSave, product, categories, loading }) => 
         categoryId: product.categoryId.toString()
       });
     } else {
-      // Сброс формы при создании нового продукта
+      // Reset form when creating a new product
       setFormData({
         name: '',
         description: '',
@@ -94,18 +94,17 @@ const ProductForm = ({ show, onHide, onSave, product, categories, loading }) => 
     }));
   };
 
-
   return (
     <Modal show={show} onHide={onHide} size="lg">
       <Modal.Header closeButton>
         <Modal.Title>
-          {product ? 'Редактировать продукт' : 'Добавить продукт'}
+          {product ? 'Edit Product' : 'Add Product'}
         </Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
           <Form.Group className="mb-3">
-            <Form.Label>Название</Form.Label>
+            <Form.Label>Name</Form.Label>
             <Form.Control
               type="text"
               name="name"
@@ -116,14 +115,14 @@ const ProductForm = ({ show, onHide, onSave, product, categories, loading }) => 
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Категория</Form.Label>
+            <Form.Label>Category</Form.Label>
             <Form.Select
               name="categoryId"
               value={formData.categoryId}
               onChange={handleInputChange}
               required
             >
-              <option value="">Выберите категорию</option>
+              <option value="">Select category</option>
               {categories.map(category => (
                 <option key={category.id} value={category.id}>
                   {category.name}
@@ -133,7 +132,7 @@ const ProductForm = ({ show, onHide, onSave, product, categories, loading }) => 
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Краткое описание</Form.Label>
+            <Form.Label>Short Description</Form.Label>
             <Form.Control
               as="textarea"
               name="description"
@@ -144,7 +143,7 @@ const ProductForm = ({ show, onHide, onSave, product, categories, loading }) => 
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Полное описание</Form.Label>
+            <Form.Label>Full Description</Form.Label>
             <Form.Control
               as="textarea"
               name="descriptionFull"
@@ -155,7 +154,7 @@ const ProductForm = ({ show, onHide, onSave, product, categories, loading }) => 
 
           <div className="row">
             <Form.Group className="col-md-6 mb-3">
-              <Form.Label>Цена (CHF)</Form.Label>
+              <Form.Label>Price (CHF)</Form.Label>
               <Form.Control
                 type="number"
                 step="0.01"
@@ -167,7 +166,7 @@ const ProductForm = ({ show, onHide, onSave, product, categories, loading }) => 
             </Form.Group>
 
             <Form.Group className="col-md-6 mb-3">
-              <Form.Label>Вес</Form.Label>
+              <Form.Label>Weight</Form.Label>
               <Form.Control
                 type="text"
                 name="weight"
@@ -186,7 +185,7 @@ const ProductForm = ({ show, onHide, onSave, product, categories, loading }) => 
           />
 
           <Form.Group className="mb-3">
-            <Form.Label>Условия хранения</Form.Label>
+            <Form.Label>Storage Conditions</Form.Label>
             <Form.Control
               type="text"
               name="umovy"
@@ -196,7 +195,7 @@ const ProductForm = ({ show, onHide, onSave, product, categories, loading }) => 
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Рецепт приготовления</Form.Label>
+            <Form.Label>Cooking Recipe</Form.Label>
             <Form.Control
               as="textarea"
               name="recipe"
@@ -206,7 +205,7 @@ const ProductForm = ({ show, onHide, onSave, product, categories, loading }) => 
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Ассортимент (каждый вариант с новой строки)</Form.Label>
+            <Form.Label>Assortment (each variant on a new line)</Form.Label>
             <Form.Control
               as="textarea"
               name="assortment"
@@ -217,7 +216,7 @@ const ProductForm = ({ show, onHide, onSave, product, categories, loading }) => 
 
           <div className="row">
             <Form.Group className="col-md-6 mb-3">
-              <Form.Label>Количество на складе</Form.Label>
+              <Form.Label>Stock Quantity</Form.Label>
               <Form.Control
                 type="number"
                 name="stock"
@@ -229,7 +228,7 @@ const ProductForm = ({ show, onHide, onSave, product, categories, loading }) => 
             <Form.Group className="col-md-6 mb-3 d-flex align-items-center">
               <Form.Check
                 type="checkbox"
-                label="Активен"
+                label="Active"
                 name="isActive"
                 checked={formData.isActive}
                 onChange={handleInputChange}
@@ -239,10 +238,10 @@ const ProductForm = ({ show, onHide, onSave, product, categories, loading }) => 
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={onHide}>
-            Отмена
+            Cancel
           </Button>
           <Button variant="primary" type="submit" disabled={loading}>
-            {loading ? 'Сохранение...' : 'Сохранить'}
+            {loading ? 'Saving...' : 'Save'}
           </Button>
         </Modal.Footer>
       </Form>

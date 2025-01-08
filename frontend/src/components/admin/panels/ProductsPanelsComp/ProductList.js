@@ -6,19 +6,19 @@ import { getImageUrl } from '../../../../config';
 
 const ProductList = ({ products, onDelete, onEdit, onAddNew }) => {
   //const { t } = useTranslation();
-  // Состояние для отслеживания ошибок загрузки изображений
+  // State for tracking image loading errors
   const [imageErrors, setImageErrors] = useState({});
 
-  /* // Вспомогательная функция для формирования URL изображения
+  /* // Helper function for forming image URL
   const getImageUrl = (path) => {
     if (!path) return null;
     if (path.startsWith('http')) return path;
-    // Убираем возможное дублирование /uploads/
+    // Remove possible /uploads/ duplication
     const cleanPath = path.replace(/^\/uploads\//, '');
     return `${process.env.REACT_APP_API_URL}/uploads/${cleanPath}`;
   }; */
 
-  // URL изображения по умолчанию
+  // Default image URL
   const defaultImageUrl = '/placeholder.jpg';
 
   const handleImageError = (productId) => {
@@ -33,21 +33,21 @@ const ProductList = ({ products, onDelete, onEdit, onAddNew }) => {
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Управление продуктами</h2>
-        <Button onClick={onAddNew}>Добавить продукт</Button>
+        <h2>Product Management</h2>
+        <Button onClick={onAddNew}>Add Product</Button>
       </div>
 
       <Table striped bordered hover responsive>
         <thead>
           <tr>
             <th>ID</th>
-            <th>Зображення</th>
-            <th>Назва</th>
-            <th>Категорія</th>
-            <th>Ціна</th>
-            <th>Вага</th>
-            <th>Склад</th>
-            <th>Дія</th>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Weight</th>
+            <th>Stock</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
