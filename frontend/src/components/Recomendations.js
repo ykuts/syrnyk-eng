@@ -1,49 +1,79 @@
-import { useState, useEffect } from 'react';
-import Row from "react-bootstrap/esm/Row";
-import products from "../data/products.json"
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
 import ProductCard from "./ProductCard";
-import Col from "react-bootstrap/esm/Col";
-import Container from "react-bootstrap/esm/Container";
+import { apiClient } from '../utils/api';
 
-const getRandomProducts = (count) => {
-    let shuffled = products.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
-};
+const Recommendations = () => {
+    const [recommendations, setRecommendations] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const { id: currentProductId } = useParams();
 
-const handleResize = (setVisibleProducts) => {
-    const width = window.innerWidth;
-    if (width >= 1200) {
-        setVisibleProducts(getRandomProducts(4));
-    } else if (width >= 768) {
-        setVisibleProducts(getRandomProducts(3));
-    } else if (width >= 576) {
-        setVisibleProducts(getRandomProducts(2));
-    } else {
-        setVisibleProducts(getRandomProducts(1));
-    }
-};
+    // Get recommended products based on screen size
+    const getVisibleProductCount = () => {
+        const width = window.innerWidth;
+        if (width >= 1200) return 4;
+        if (width >= 768) return 3;
+        if (width >= 576) return 2;
+        return 1;
+    };
 
-const Recomendations = () => {
-    const [visibleProducts, setVisibleProducts] = useState([]);
+    // Fetch products and filter recommendations
+    const fetchRecommendations = async () => {
+        try {
+            setLoading(true);
+            const products = await apiClient.get('/products');
+            
+            // Filter out current product and get random products
+            const filteredProducts = products
+                .filter(product => product.id !== parseInt(currentProductId))
+                // Get products from the same category if possible
+                .sort((a, b) => {
+                    if (a.categoryId === products.find(p => p.id === parseInt(currentProductId))?.categoryId) return -1;
+                    if (b.categoryId === products.find(p => p.id === parseInt(currentProductId))?.categoryId) return 1;
+                    return Math.random() - 0.5;
+                })
+                .slice(0, getVisibleProductCount());
+
+            setRecommendations(filteredProducts);
+        } catch (error) {
+            console.error('Error fetching recommendations:', error);
+            setRecommendations([]);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        handleResize(setVisibleProducts); // Initial load
-        const onResize = () => handleResize(setVisibleProducts);
-        window.addEventListener('resize', onResize);
+        fetchRecommendations();
 
-        return () => {
-            window.removeEventListener('resize', onResize);
+        // Handle window resize
+        const handleResize = () => {
+            fetchRecommendations();
         };
-    }, []);
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [currentProductId]); // Re-fetch when product ID changes
+
+    if (loading || recommendations.length === 0) {
+        return null;
+    }
 
     return (
         <Container>
             <Row>
-                {visibleProducts.map((product) => (
+                {recommendations.map((product) => (
                     <Col
                         key={product.id}
-                        xs={12} sm={6} md={4} lg={3}
+                        xs={12} 
+                        sm={6} 
+                        md={4} 
+                        lg={3}
                         className="d-flex justify-content-center align-items-center p-3"
+                        style={{ backgroundColor: 'white' }}
                     >
                         <ProductCard product={product} />
                     </Col>
@@ -51,6 +81,6 @@ const Recomendations = () => {
             </Row>
         </Container>
     );
-}
+};
 
-export default Recomendations;
+export default Recommendations;
