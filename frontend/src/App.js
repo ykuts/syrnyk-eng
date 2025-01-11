@@ -21,7 +21,7 @@ import DeliveryPanel from './components/admin/panels/DeliveryPanel';
 import PrivateRoute from './components/PrivateRoute';
 import OrderHistory from './components/OrderHistory';
 import UserProfile from './components/UserProfile';
-import AboutUs from './components/AboutUs';
+import AboutUs from './components/aboutus/AboutUs';
 
 
 
