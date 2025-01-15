@@ -3,7 +3,6 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Image from 'react-bootstrap/esm/Image';
-import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/esm/Row';
 import Col from 'react-bootstrap/esm/Col';
 import Modal from 'react-bootstrap/Modal';
@@ -19,6 +18,7 @@ import { CartContext } from '../context/CartContext';
 import { Trash, User, Package, Box, LogOut, Settings, Truck, SquareUserRound } from "lucide-react";
 import './CartNavItem.css';
 import './Menu2.css';
+import LoginModal from './LoginModal';
 
 const Menu2 = () => {
     const [isSticky, setIsSticky] = useState(false);
@@ -27,6 +27,7 @@ const Menu2 = () => {
     const { user, logout } = useAuth();
 
     const [showLogin, setShowLogin] = useState(false); // to display Modal
+    
 
     const { cartItems, removeFromCart, totalPrice, addOneToCart, removeAllFromCart } = useContext(CartContext);
     const [showCart, setShowCart] = useState(false);
@@ -314,14 +315,18 @@ const Menu2 = () => {
             </Modal>
 
             {/* Modal for Login form */}
-            <Modal show={showLogin} onHide={() => setShowLogin(false)} centered>
+            <LoginModal 
+                show={showLogin} 
+                onHide={() => setShowLogin(false)}
+            />
+            {/* <Modal show={showLogin} onHide={() => setShowLogin(false)} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Sign In</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <LoginForm closeModal={() => setShowLogin(false)} />
                 </Modal.Body>
-            </Modal>
+            </Modal> */}
         </>
     );
 };
