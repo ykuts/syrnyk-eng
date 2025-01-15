@@ -80,6 +80,10 @@ const ProductsPanel = () => {
       images: (product.images || []).map(img => img.replace(/^\/+/, ''))
     };
 
+    setSelectedProduct(cleanedProduct);
+    setShowModal(true);
+  };
+
   // Creating or updating a product
   const handleSave = async (productData) => {
     setLoading(true);
