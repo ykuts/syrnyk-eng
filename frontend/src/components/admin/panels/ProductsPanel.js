@@ -48,8 +48,24 @@ const ProductsPanel = () => {
     }
 
     try {
-      await apiClient.post(`/products/${id}`, {}, { method: 'DELETE' });
-      await fetchProducts();
+      const product = products.find(p => p.id === id);
+    
+    // Delete main image and additional images if they exist
+    if (product.image || (product.images && product.images.length > 0)) {
+      const allImages = [product.image, ...(product.images || [])].filter(Boolean);
+      
+      for (const imagePath of allImages) {
+        const filename = imagePath.split('/').pop();
+        try {
+          await apiClient.delete(`/upload/products/${filename}`);
+        } catch (err) {
+          console.error('Error deleting image:', imagePath, err);
+        }
+      }
+    }
+
+        await apiClient.delete(`/products/${id}`);
+        await fetchProducts();
     } catch (err) {
       setError('Error deleting product');
       console.error(err);
@@ -58,23 +74,26 @@ const ProductsPanel = () => {
 
   // Opening the form for editing
   const handleEdit = (product) => {
-    setSelectedProduct(product);
-    setShowModal(true);
-  };
+    const cleanedProduct = {
+      ...product,
+      image: product.image ? product.image.replace(/^\/+/, '') : '',
+      images: (product.images || []).map(img => img.replace(/^\/+/, ''))
+    };
 
   // Creating or updating a product
   const handleSave = async (productData) => {
     setLoading(true);
     try {
       if (selectedProduct) {
-        await apiClient.post(`/products/${selectedProduct.id}`, productData);
-      } else {
+        // Use PUT instead of POST for updates
+        await apiClient.put(`/products/${selectedProduct.id}`, productData);
+    } else {
         await apiClient.post('/products/add', productData);
-      }
-
-      await fetchProducts();
-      setShowModal(false);
-      setSelectedProduct(null);
+    }
+    
+    await fetchProducts();
+    setShowModal(false);
+    setSelectedProduct(null);
     } catch (err) {
       setError('Error saving product');
       console.error(err);
