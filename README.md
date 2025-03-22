@@ -27,7 +27,7 @@ This MVP version demonstrates key features of a scalable online store — from p
 - React.js  
 - HTML5 + CSS3  
 - Axios  
-- Bootstrap (or other UI frameworks)
+- Bootstrap
 
 **Backend**  
 - Node.js + Express  
