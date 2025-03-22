@@ -11,7 +11,6 @@ import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom'; 
-import LoginForm from './LoginForm';
 import '../custom.scss';
 import { useAuth } from '../context/AuthContext';
 import { CartContext } from '../context/CartContext';
